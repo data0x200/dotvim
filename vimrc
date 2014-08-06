@@ -89,6 +89,7 @@ NeoBundle 'taka84u9/unite-git', { 'depends' : 'Shougo/unite.vim' }
 NeoBundle 'sorah/unite-ghq', { 'depends' : 'Shougo/unite.vim'}
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'tyru/open-browser.vim'
+NeoBundle 'Shougo/neocomplete.vim'
 NeoBundleLazy 'thinca/vim-quickrun', {
       \ 'autoload' : {
       \   'commands' : ['QuickRun']
@@ -104,7 +105,7 @@ NeoBundleLazy 'ujihisa/shadow.vim', {
 NeoBundle 'kana/vim-submode'
 NeoBundle 'tpope/vim-surround'
 NeoBundleLazy 'tpope/vim-rails', {
-      \ 'autolad' : {
+      \ 'autoload' : {
       \   'commands' : ['R', 'A']
       \ }}
 NeoBundleLazy 'sudo.vim', {
@@ -129,6 +130,17 @@ NeoBundleLazy 'rhysd/clever-f.vim', {
       \ }}
 NeoBundle 'matchit.zip'
 
+" Language
+NeoBundleLazy 'jnwhiteh/vim-golang', {
+      \ 'autoload' : {
+      \   'filetypes' : ['go']
+      \ }}
+NeoBundleLazy 'nsf/gocode', {
+      \ 'rtp' : 'vim',
+      \ 'autoload' : {
+      \   'filetypes' : ['go']
+      \ }}
+
 " colorscheme
 NeoBundle 'nanotech/jellybeans.vim'
 
@@ -136,12 +148,10 @@ call neobundle#end()
 
 " Required:
 filetype plugin indent on
-
+syntax on
 
 " Installation check.
-if !has('gui_running') && s:is_windows
-  NeoBundleCheck
-endif
+NeoBundleCheck
 
 "========================================
 " startup
@@ -449,6 +459,17 @@ elseif has('win32') || has('win64')
   let g:vimproc_dll_path = $HOME."/vimfiles/bundle/vimproc/autoload/vimproc_win64.dll"
 endif
 
+"----------------------------------------
+" neocomplete
+"----------------------------------------
+let g:neocomplete#enable_at_startup=1
+let g:neocomplete#enable_auto_select=1
+let g:neocomplete#enable_auto_close_preview=0
+
+inoremap <expr><C-g> neocomplete#smart_close_popup()
+inoremap <expr><C-l> neocomplete#complete_common_string()
+inoremap <expr><TAB> neocomplete#close_popup()
+
 "========================================
 " zen-coding
 "========================================
@@ -600,3 +621,18 @@ call smartinput#define_rule({
       \ 'input' : '=  %><Left><Left><Left>',
       \ 'filetype' : ['eruby'],
       \ })
+
+"========================================
+" Language
+"========================================
+"
+"----------------------------------------
+" Golang
+"----------------------------------------
+ set completeopt=menuone,preview
+ let g:gofmt_command = 'goimports'
+
+ augroup MyAutoCmd
+   autocmd FileType go autocmd BufWritePre <buffer> Fmt
+   autocmd FileType go compiler go
+ augroup END
