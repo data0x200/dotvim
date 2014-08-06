@@ -84,11 +84,52 @@ NeoBundle 'Shougo/vimproc', {
       \     'mac' : 'make -f make_mac.mak',
       \     'unix' : 'make -f make_unix.mak'
       \ }}
-
+NeoBundle 'Shougo/neomru.vim', { 'depends' : 'Shougo/unite.vim'}
+NeoBundle 'taka84u9/unite-git', { 'depends' : 'Shougo/unite.vim' }
 NeoBundle 'sorah/unite-ghq', { 'depends' : 'Shougo/unite.vim'}
-
 NeoBundle 'tyru/caw.vim'
+NeoBundle 'tyru/open-browser.vim'
+NeoBundleLazy 'thinca/vim-quickrun', {
+      \ 'autoload' : {
+      \   'commands' : ['QuickRun']
+      \ }}
+NeoBundleLazy 'mattn/zencoding-vim', {
+      \ 'autoload' : {
+      \   'filetypes' : ['html', 'eruby', 'haml', 'slim', 'xml', 'css', 'php']
+      \ }}
+NeoBundleLazy 'ujihisa/shadow.vim', {
+      \ 'autoload' : {
+      \   'filetypes' : ['shadow']
+      \ }}
+NeoBundle 'kana/vim-submode'
+NeoBundle 'tpope/vim-surround'
+NeoBundleLazy 'tpope/vim-rails', {
+      \ 'autolad' : {
+      \   'commands' : ['R', 'A']
+      \ }}
+NeoBundleLazy 'sudo.vim', {
+      \ 'autoload' : {
+      \   'commands' : [
+      \     'SudoWrite',
+      \     'SudoRead'
+      \ ]}}
+NeoBundle 'kana/vim-smartinput', {
+      \ 'autoload' : {
+      \   'insert' : '1'
+      \ }}
+NeoBundleLazy 'kana/vim-smartchr',  {
+      \ 'autoload' : {
+      \   'insert' : '1'
+      \ }}
+NeoBundle 'bling/vim-airline'
+NeoBundle 'scrooloose/syntastic'
+NeoBundleLazy 'rhysd/clever-f.vim', {
+      \ 'autoload' : {
+      \ 'mappings' : ['f']
+      \ }}
+NeoBundle 'matchit.zip'
 
+" colorscheme
 NeoBundle 'nanotech/jellybeans.vim'
 
 call neobundle#end()
@@ -110,10 +151,7 @@ augroup MyAutoCmd
   autocmd WinEnter * checktime
 augroup END
 
-" Enable Singlton
-if has('clientserver')
-  call singleton#enable()
-endif
+let plugin_cmdex_disable = 1
 
 "========================================
 " settings
@@ -132,6 +170,13 @@ set statusline=%y%<%F\ %m%r%h%w%=%#warningmsg#%*%{'['.(&fenc!=''?&fenc:&enc).'/'
 "バックスペースで何でも削除
 set backspace=indent,eol,start
 
+" 行末スペースの表示
+augroup MyAutoCmd
+  autocmd!
+   autocmd ColorScheme * highlight WhitespaceEOL ctermbg=DarkGray guibg=DarkGray
+   autocmd VimEnter,WinEnter * match WhitespaceEOL /\s\+$/
+augroup END
+
 " 保存時に行末の空白を削除
 augroup MyAutoCmd
   autocmd BufWritePre * :%s/\s\+$//e
@@ -142,17 +187,6 @@ set hid
 
 "補完をつかいやすく
 set wildmode=list:longest,full
-
-"cursorline
-"遅いので
-"set cursorline
-"set cursorcolumn
-" augroup MyAutoCmd
-"   autocmd WinEnter * setlocal cursorline
-"   autocmd WinLeave * setlocal nocursorline
-"   autocmd WinEnter * setlocal cursorcolumn
-"   autocmd WinLeave * setlocal nocursorcolumn
-" augroup END
 
 " paste toggle
 set pastetoggle=<F12>
@@ -388,6 +422,23 @@ set fileformats=unix,dos,mac
 set ambiwidth=double
 
 "========================================
+" Plugins
+"========================================
+"----------------------------------------
+" Unite
+"----------------------------------------
+call unite#custom#profile('default', 'context', {
+      \ 'start_insert' : 1,
+      \ 'winheight' : '30',
+      \ 'vertical' : 1
+      \ })
+call unite#custom#profile('neobundle/update', 'context', {
+      \ 'auto_quit' : 1
+      \ })
+nnoremap <Space>g :<C-u>Unite git_cached<CR>
+nnoremap <Space>ua :<C-u>Unite buffer file_mru<CR>
+
+"========================================
 " vimproc
 "========================================
 if has('mac')
@@ -398,3 +449,154 @@ elseif has('win32') || has('win64')
   let g:vimproc_dll_path = $HOME."/vimfiles/bundle/vimproc/autoload/vimproc_win64.dll"
 endif
 
+"========================================
+" zen-coding
+"========================================
+ let g:user_zen_settings = {
+  \ 'indentation' : '  ',
+  \ 'php' : {
+  \   'extends' : 'html',
+  \   'filters' : 'c',
+  \ },
+  \ 'xml' : {
+  \   'extends' : 'html',
+  \ },
+  \ 'haml' : {
+  \   'extends' : 'html',
+  \ },
+  \ 'erb' : {
+  \   'extends' : 'html',
+  \ },
+  \}
+
+"========================================
+" open-browser.vim
+"========================================
+nmap <Leader>o <Plug>(openbrowser-open)
+
+"========================================
+" quickrun
+"========================================
+augroup MyAutoCmd
+  autocmd BufReadPost *_spec.rb set filetype=ruby.rspec
+augroup END
+
+" %cはcommandに設定した値に置換される
+" %oはcmdoptに設定した値に置換される
+" %sはソースファイル名に置換される
+let g:quickrun_config = {}
+let g:quickrun_config['_'] = {
+      \ 'shebang' : '1',
+      \ 'runner' : 'remote/vimproc:100'
+      \ }
+let g:quickrun_config['coffee'] = {
+      \ 'command' : 'coffee',
+      \ 'filetype' : 'javascript',
+      \ 'exec'    : ['%c -cbp %s']
+      \ }
+let g:quickrun_config['ruby.rspec'] = {
+      \ 'type': 'ruby',
+      \ 'command': 'ruby',
+      \ 'outputter': 'buffer',
+      \ 'exec': 'bundle exec %c %o %s'
+      \}
+let g:quickrun_config['ruby.rspec'] = {
+      \ 'type': 'ruby.rspec',
+      \ 'command': 'rspec',
+      \ 'outputter': 'buffer',
+      \ 'filetype': 'rspec-result',
+      \ 'exec': 'bundle exec %c %o --color %s'
+      \}
+let g:quickrun_config['html'] = {
+      \ 'command' : 'open',
+      \ 'runner'  : 'system'
+      \ }
+let g:quickrun_config['xhtml'] = {
+      \ 'command' : 'firefox',
+      \ 'runner'  : 'system'
+      \ }
+let g:quickrun_config['javascript'] = {
+      \ 'command' : 'js2coffee',
+      \ 'exec'    : ['cat %s|%c']
+      \ }
+let g:quickrun_config.markdown = {
+      \ 'command'   : 'pandoc',
+      \ 'exec' : "%c %s",
+      \ 'runner'    : 'system'
+      \ }
+"let g:quickrun_config['markdown'] = {
+"      \ 'exec'      : ['firefox | %c'],
+"      \ 'outputter' : 'browser',
+"      \ 'runner'    : 'system'
+"      \ }
+
+nnoremap <Leader>q :<C-u>QuickRun cat<CR>
+nnoremap <expr><silent> <Leader>lr "<Esc>:QuickRun -cmdopt \"-l " . line(".") . "\"<CR>"
+
+"========================================
+" vim-submode
+"========================================
+call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
+call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
+call submode#enter_with('winsize', 'n', '', '<C-w>+', '<C-w>+')
+call submode#enter_with('winsize', 'n', '', '<C-w>-', '<C-w>-')
+call submode#map('winsize', 'n', '', '>', '<C-w>>')
+call submode#map('winsize', 'n', '', '<', '<C-w><')
+call submode#map('winsize', 'n', '', '+', '<C-w>+')
+call submode#map('winsize', 'n', '', '-', '<C-w>-')
+
+
+"========================================
+" syntastic
+"========================================
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_enable_signs = 1
+
+let g:syntastic_javascript_checkers = ["jshint"]
+let g:syntastic_json_checkers = ["jsonlint"]
+
+let g:syntastic_mode_map = {
+      \ 'mode' : 'active',
+      \ 'active_filetypes' : [],
+      \ 'passive_filetypes' : ['haml', 'scss']
+      \}
+
+"========================================
+" smartchr
+"========================================
+
+"========================================
+" smartinput
+"========================================
+call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
+call smartinput#define_rule({
+      \ 'at'       : '\({\|\<do\>\)\s*\%#',
+      \ 'char'     : '<Bar>',
+      \ 'input'    : '<Bar><Bar><Left>',
+      \ 'filetype' : ['ruby'],
+      \  })
+
+call smartinput#map_to_trigger('i', '#', '#', '#')
+call smartinput#define_rule({
+      \ 'at'       : '"\%#"',
+      \ 'char'     : '#',
+      \ 'input'    : '#{}<Left>',
+      \ 'filetype' : ['ruby'],
+      \ 'syntax'   : ['Constant', 'Special'],
+      \ })
+
+call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
+call smartinput#define_rule({
+      \ 'at'       : '<%\%#',
+      \ 'char'     : '<Space>',
+      \ 'input'    : '  %><Left><Left><Left>',
+      \ 'filetype' : ['eruby'],
+      \ })
+
+call smartinput#map_to_trigger('i', '=', '=', '=')
+call smartinput#define_rule({
+      \ 'at' : '<%\%#',
+      \ 'char' : '=',
+      \ 'input' : '=  %><Left><Left><Left>',
+      \ 'filetype' : ['eruby'],
+      \ })
