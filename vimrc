@@ -87,9 +87,13 @@ NeoBundle 'Shougo/vimproc', {
 NeoBundle 'Shougo/neomru.vim', { 'depends' : 'Shougo/unite.vim'}
 NeoBundle 'taka84u9/unite-git', { 'depends' : 'Shougo/unite.vim' }
 NeoBundle 'sorah/unite-ghq', { 'depends' : 'Shougo/unite.vim'}
+
+NeoBundle 'Shougo/vimfiler.vim'
 NeoBundle 'tyru/caw.vim'
 NeoBundle 'tyru/open-browser.vim'
+
 NeoBundle 'Shougo/neocomplete.vim'
+
 NeoBundleLazy 'thinca/vim-quickrun', {
       \ 'autoload' : {
       \   'commands' : ['QuickRun']
@@ -129,6 +133,7 @@ NeoBundleLazy 'rhysd/clever-f.vim', {
       \ 'mappings' : ['f']
       \ }}
 NeoBundle 'matchit.zip'
+NeoBundle 'osyo-manga/vim-over'
 
 " Language
 NeoBundleLazy 'jnwhiteh/vim-golang', {
@@ -140,6 +145,11 @@ NeoBundleLazy 'nsf/gocode', {
       \ 'autoload' : {
       \   'filetypes' : ['go']
       \ }}
+NeoBundleLazy 'slim-template/vim-slim', {
+      \ 'autoload' : {
+      \ 'filetypes' : ['slim']
+      \ }}
+
 
 " colorscheme
 NeoBundle 'nanotech/jellybeans.vim'
@@ -433,17 +443,18 @@ set ambiwidth=double
 call unite#custom#profile('default', 'context', {
       \ 'start_insert' : 1,
       \ 'winheight' : '30',
-      \ 'vertical' : 1
+      \ 'vertical' : 1,
+      \ 'ignorecase' : 1,
       \ })
 call unite#custom#profile('neobundle/update', 'context', {
       \ 'auto_quit' : 1
       \ })
-nnoremap <Space>g :<C-u>Unite git_cached<CR>
+nnoremap <Space>gr :<C-u>Unite git_cached<CR>
 nnoremap <Space>ua :<C-u>Unite buffer file_mru<CR>
 
-"========================================
+"----------------------------------------
 " vimproc
-"========================================
+"----------------------------------------
 if has('mac')
   let g:vimproc_dll_path = $HOME."/.vim/bundle/vimproc/autoload/vimproc_mac.so"
 elseif has('unix')
@@ -451,6 +462,14 @@ elseif has('unix')
 elseif has('win32') || has('win64')
   let g:vimproc_dll_path = $HOME."/vimfiles/bundle/vimproc/autoload/vimproc_win64.dll"
 endif
+
+"----------------------------------------
+" VimFiler
+"----------------------------------------
+let g:vimfiler_as_default_explorer = 1
+
+nnoremap <Space>fc :<C-u>VimFilerCurrentDir<CR>
+nnoremap <Space>ff :<C-u>VimFilerBufferDir<CR>
 
 "----------------------------------------
 " neocomplete
@@ -462,10 +481,14 @@ let g:neocomplete#enable_auto_close_preview=0
 inoremap <expr><C-g> neocomplete#smart_close_popup()
 inoremap <expr><C-l> neocomplete#complete_common_string()
 inoremap <expr><TAB> neocomplete#close_popup()
+inoremap <expr><CR> neocomplete#smart_close_popup()."\<C-m>"
+inoremap <expr><C-m> neocomplete#smart_close_popup()."\<C-m>"
+inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
+inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 
-"========================================
+"----------------------------------------
 " zen-coding
-"========================================
+"----------------------------------------
  let g:user_zen_settings = {
   \ 'indentation' : '  ',
   \ 'php' : {
@@ -483,18 +506,14 @@ inoremap <expr><TAB> neocomplete#close_popup()
   \ },
   \}
 
-"========================================
+"----------------------------------------
 " open-browser.vim
-"========================================
+"----------------------------------------
 nmap <Leader>o <Plug>(openbrowser-open)
 
-"========================================
+"----------------------------------------
 " quickrun
-"========================================
-augroup MyAutoCmd
-  autocmd BufReadPost *_spec.rb set filetype=ruby.rspec
-augroup END
-
+"----------------------------------------
 " %cはcommandに設定した値に置換される
 " %oはcmdoptに設定した値に置換される
 " %sはソースファイル名に置換される
@@ -545,11 +564,13 @@ let g:quickrun_config.markdown = {
 "      \ }
 
 nnoremap <Leader>q :<C-u>QuickRun cat<CR>
+nnoremap <Leader>, :<C-u>QuickRun<CR>
+nnoremap <Space>r :<C-u>QuickRun<CR>
 nnoremap <expr><silent> <Leader>lr "<Esc>:QuickRun -cmdopt \"-l " . line(".") . "\"<CR>"
 
-"========================================
+"----------------------------------------
 " vim-submode
-"========================================
+"----------------------------------------
 call submode#enter_with('winsize', 'n', '', '<C-w>>', '<C-w>>')
 call submode#enter_with('winsize', 'n', '', '<C-w><', '<C-w><')
 call submode#enter_with('winsize', 'n', '', '<C-w>+', '<C-w>+')
@@ -560,9 +581,9 @@ call submode#map('winsize', 'n', '', '+', '<C-w>+')
 call submode#map('winsize', 'n', '', '-', '<C-w>-')
 
 
-"========================================
+"----------------------------------------
 " syntastic
-"========================================
+"----------------------------------------
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_enable_signs = 1
 
@@ -599,6 +620,14 @@ call smartinput#define_rule({
       \ 'syntax'   : ['Constant', 'Special'],
       \ })
 
+call smartinput#map_to_trigger('i', '<CR>', '<CR>', '<CR>')
+call smartinput#define_rule({
+      \ 'at': '"do\%#"',
+      \ 'char' : '<CR>',
+      \ 'input' : '<CR>end<ESC><S-o>',
+      \ 'filetype' : ['ruby'],
+      \ })
+
 call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
 call smartinput#define_rule({
       \ 'at'       : '<%\%#',
@@ -618,7 +647,7 @@ call smartinput#define_rule({
 "========================================
 " Language
 "========================================
-"
+
 "----------------------------------------
 " Golang
 "----------------------------------------
@@ -629,3 +658,26 @@ call smartinput#define_rule({
    autocmd FileType go autocmd BufWritePre <buffer> Fmt
    autocmd FileType go compiler go
  augroup END
+
+"----------------------------------------
+" Ruby
+"----------------------------------------
+augroup MyAutoCmd
+  autocmd BufReadPost *_spec.rb set filetype=ruby.rspec
+augroup END
+
+"----------------------------------------
+" Rails
+"----------------------------------------
+augroup MyAutoCmd
+  autocmd BufEnter * if exists("b:rails_root") | NeoCompleteSetFileType ruby.rails | endif
+augroup END
+command! V Rview
+
+"----------------------------------------
+" Slim
+"----------------------------------------
+augroup MyAutoCmd
+  autocmd BufReadPost *.slim set filetype=slim
+augroup END
+
