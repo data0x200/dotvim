@@ -180,13 +180,6 @@ set statusline=%y%<%F\ %m%r%h%w%=%#warningmsg#%*%{'['.(&fenc!=''?&fenc:&enc).'/'
 "バックスペースで何でも削除
 set backspace=indent,eol,start
 
-" 行末スペースの表示
-augroup MyAutoCmd
-  autocmd!
-   autocmd ColorScheme * highlight WhitespaceEOL ctermbg=DarkGray guibg=DarkGray
-   autocmd VimEnter,WinEnter * match WhitespaceEOL /\s\+$/
-augroup END
-
 " 保存時に行末の空白を削除
 augroup MyAutoCmd
   autocmd BufWritePre * :%s/\s\+$//e
