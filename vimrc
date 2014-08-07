@@ -134,6 +134,10 @@ NeoBundleLazy 'rhysd/clever-f.vim', {
       \ }}
 NeoBundle 'matchit.zip'
 NeoBundle 'osyo-manga/vim-over'
+NeoBundleLazy 'koron/codic-vim', {
+      \ 'autoload' : {
+      \ 'commands': ['Codic']
+      \ }}
 
 " Language
 NeoBundleLazy 'jnwhiteh/vim-golang', {
