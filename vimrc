@@ -138,6 +138,7 @@ NeoBundleLazy 'koron/codic-vim', {
       \ 'autoload' : {
       \ 'commands': ['Codic']
       \ }}
+NeoBundle 'kana/vim-tabpagecd'
 
 " Language
 NeoBundleLazy 'vim-ruby/vim-ruby', {
