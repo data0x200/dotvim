@@ -393,6 +393,12 @@ vnoremap : ;
 nnoremap gf gF
 nnoremap gF gf
 
+" gj, gkの入れ替え
+nnoremap j gj
+nnoremap gj j
+nnoremap k gk
+nnoremap gk k
+
 " コマンドモード
 cnoremap <C-a> <Home>
 cnoremap <C-b> <Left>
