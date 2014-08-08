@@ -10,7 +10,7 @@ colorscheme jellybeans
 " augroup END
 
 if has('mac')
-  set guifont=Ricty\ Discord:h16
+  set guifont=Ricty\ Discord:h12
 elseif has('unix')
   set guifont=Ricty\ 14
 end

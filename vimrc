@@ -140,6 +140,10 @@ NeoBundleLazy 'koron/codic-vim', {
       \ }}
 
 " Language
+NeoBundleLazy 'vim-ruby/vim-ruby', {
+      \ 'autoload' : {
+      \   'filetypes' : ['ruby']
+      \ }}
 NeoBundleLazy 'jnwhiteh/vim-golang', {
       \ 'autoload' : {
       \   'filetypes' : ['go']
@@ -485,14 +489,12 @@ nnoremap <Space>ff :<C-u>VimFilerBufferDir<CR>
 " neocomplete
 "----------------------------------------
 let g:neocomplete#enable_at_startup=1
-let g:neocomplete#enable_auto_select=1
+let g:neocomplete#enable_auto_select=0
 let g:neocomplete#enable_auto_close_preview=0
 
 inoremap <expr><C-g> neocomplete#smart_close_popup()
-inoremap <expr><C-l> neocomplete#complete_common_string()
+inoremap <expr><C-l> neocomplete#start_manual_complete()
 inoremap <expr><TAB> neocomplete#close_popup()
-inoremap <expr><CR> neocomplete#smart_close_popup()."\<C-m>"
-inoremap <expr><C-m> neocomplete#smart_close_popup()."\<C-m>"
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 
@@ -606,13 +608,13 @@ let g:syntastic_mode_map = {
       \ 'passive_filetypes' : ['haml', 'scss']
       \}
 
-"========================================
+"----------------------------------------
 " smartchr
-"========================================
+"----------------------------------------
 
-"========================================
+"----------------------------------------
 " smartinput
-"========================================
+"----------------------------------------
 call smartinput#map_to_trigger('i', '<Bar>', '<Bar>', '<Bar>')
 call smartinput#define_rule({
       \ 'at'       : '\({\|\<do\>\)\s*\%#',
@@ -630,11 +632,11 @@ call smartinput#define_rule({
       \ 'syntax'   : ['Constant', 'Special'],
       \ })
 
-call smartinput#map_to_trigger('i', '<CR>', '<CR>', '<CR>')
+call smartinput#map_to_trigger('i', '<C-m>', '<C-m>', '<C-m>')
 call smartinput#define_rule({
       \ 'at': '"do\%#"',
-      \ 'char' : '<CR>',
-      \ 'input' : '<CR>end<ESC><S-o>',
+      \ 'char' : '<C-m>',
+      \ 'input' : '<C-m>end<ESC><S-o>',
       \ 'filetype' : ['ruby'],
       \ })
 
