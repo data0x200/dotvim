@@ -94,6 +94,13 @@ NeoBundle 'tyru/open-browser.vim'
 
 NeoBundle 'Shougo/neocomplete.vim'
 
+NeoBundleLazy 'Shougo/vimshell.vim', {
+      \ 'autoload' : {
+      \   'commands' : [
+      \      'VimShell',
+      \      'VimShellPop'
+      \ ]}}
+
 NeoBundleLazy 'thinca/vim-quickrun', {
       \ 'autoload' : {
       \   'commands' : ['QuickRun']
@@ -157,6 +164,14 @@ NeoBundleLazy 'nsf/gocode', {
 NeoBundleLazy 'slim-template/vim-slim', {
       \ 'autoload' : {
       \ 'filetypes' : ['slim']
+      \ }}
+NeoBundleLazy 'kchmck/vim-coffee-script', {
+      \ 'autoload' : {
+      \   'filetypes' : ['coffee']
+      \ }}
+NeoBundleLazy 'mxw/vim-jsx', {
+      \ 'autoload' : {
+      \   'filetypes' : ['jsx']
       \ }}
 
 
@@ -493,11 +508,17 @@ let g:neocomplete#enable_at_startup=1
 let g:neocomplete#enable_auto_select=0
 let g:neocomplete#enable_auto_close_preview=0
 
+inoremap <expr><C-m> neocomplete#smart_close_popup()."\<C-m>"
 inoremap <expr><C-g> neocomplete#smart_close_popup()
 inoremap <expr><C-l> neocomplete#start_manual_complete()
 inoremap <expr><TAB> neocomplete#close_popup()
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
+
+"----------------------------------------
+" VimShell
+"----------------------------------------
+nnoremap <Space>p :<C-u>VimShellPop<CR>
 
 "----------------------------------------
 " zen-coding
@@ -597,7 +618,7 @@ call submode#map('winsize', 'n', '', '-', '<C-w>-')
 "----------------------------------------
 " syntastic
 "----------------------------------------
-let g:syntastic_auto_loc_list = 1
+let g:syntastic_auto_loc_list = 2
 let g:syntastic_enable_signs = 1
 
 let g:syntastic_javascript_checkers = ["jshint"]
@@ -631,14 +652,6 @@ call smartinput#define_rule({
       \ 'input'    : '#{}<Left>',
       \ 'filetype' : ['ruby'],
       \ 'syntax'   : ['Constant', 'Special'],
-      \ })
-
-call smartinput#map_to_trigger('i', '<C-m>', '<C-m>', '<C-m>')
-call smartinput#define_rule({
-      \ 'at': '"do\%#"',
-      \ 'char' : '<C-m>',
-      \ 'input' : '<C-m>end<ESC><S-o>',
-      \ 'filetype' : ['ruby'],
       \ })
 
 call smartinput#map_to_trigger('i', '<Space>', '<Space>', '<Space>')
@@ -694,3 +707,9 @@ augroup MyAutoCmd
   autocmd BufReadPost *.slim set filetype=slim
 augroup END
 
+"----------------------------------------
+" Coffee
+"----------------------------------------
+augroup MyAutoCmd
+  autocmd BufReadPost *.coffee set filetype=coffee
+augroup END
