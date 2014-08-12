@@ -28,7 +28,7 @@ let $DOTVIM = expand('~/.vim')
 
 " Because a value is not set in $MYGVIMRC with the console, set it.
 if !exists($MYGVIMRC)
-  let $MYGVIMRC = expand('~/.vim/gvimrc')
+  let $MYGVIMRC = expand('~/.gvimrc')
 endif
 
 " Anywhere SID.
@@ -94,13 +94,6 @@ NeoBundle 'tyru/open-browser.vim'
 
 NeoBundle 'Shougo/neocomplete.vim'
 
-NeoBundleLazy 'Shougo/vimshell.vim', {
-      \ 'autoload' : {
-      \   'commands' : [
-      \      'VimShell',
-      \      'VimShellPop'
-      \ ]}}
-
 NeoBundleLazy 'thinca/vim-quickrun', {
       \ 'autoload' : {
       \   'commands' : ['QuickRun']
@@ -152,7 +145,7 @@ NeoBundleLazy 'vim-ruby/vim-ruby', {
       \ 'autoload' : {
       \   'filetypes' : ['ruby']
       \ }}
-NeoBundleLazy 'jnwhiteh/vim-golang', {
+NeoBundleLazy 'vim-jp/go-vim', {
       \ 'autoload' : {
       \   'filetypes' : ['go']
       \ }}
@@ -164,14 +157,6 @@ NeoBundleLazy 'nsf/gocode', {
 NeoBundleLazy 'slim-template/vim-slim', {
       \ 'autoload' : {
       \ 'filetypes' : ['slim']
-      \ }}
-NeoBundleLazy 'kchmck/vim-coffee-script', {
-      \ 'autoload' : {
-      \   'filetypes' : ['coffee']
-      \ }}
-NeoBundleLazy 'mxw/vim-jsx', {
-      \ 'autoload' : {
-      \   'filetypes' : ['jsx']
       \ }}
 
 
@@ -508,17 +493,12 @@ let g:neocomplete#enable_at_startup=1
 let g:neocomplete#enable_auto_select=0
 let g:neocomplete#enable_auto_close_preview=0
 
-inoremap <expr><C-m> neocomplete#smart_close_popup()."\<C-m>"
+inoremap <expr><CR> pumvisible() ? neocomplete#cancel_popup()."\<CR>" : "\<CR>"
 inoremap <expr><C-g> neocomplete#smart_close_popup()
 inoremap <expr><C-l> neocomplete#start_manual_complete()
 inoremap <expr><TAB> neocomplete#close_popup()
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
-
-"----------------------------------------
-" VimShell
-"----------------------------------------
-nnoremap <Space>p :<C-u>VimShellPop<CR>
 
 "----------------------------------------
 " zen-coding
@@ -597,7 +577,7 @@ let g:quickrun_config.markdown = {
 "      \ 'runner'    : 'system'
 "      \ }
 
-nnoremap <Leader>q :<C-u>QuickRun<CR>
+nnoremap <Leader>q :<C-u>QuickRun cat<CR>
 nnoremap <Leader>, :<C-u>QuickRun<CR>
 nnoremap <Space>r :<C-u>QuickRun<CR>
 nnoremap <expr><silent> <Leader>lr "<Esc>:QuickRun -cmdopt \"-l " . line(".") . "\"<CR>"
@@ -618,7 +598,7 @@ call submode#map('winsize', 'n', '', '-', '<C-w>-')
 "----------------------------------------
 " syntastic
 "----------------------------------------
-let g:syntastic_auto_loc_list = 2
+let g:syntastic_auto_loc_list = 1
 let g:syntastic_enable_signs = 1
 
 let g:syntastic_javascript_checkers = ["jshint"]
@@ -629,8 +609,6 @@ let g:syntastic_mode_map = {
       \ 'active_filetypes' : [],
       \ 'passive_filetypes' : ['haml', 'scss']
       \}
-
-nnoremap <Space>e :<C-u>Errors<CR>
 
 "----------------------------------------
 " smartchr
@@ -709,9 +687,3 @@ augroup MyAutoCmd
   autocmd BufReadPost *.slim set filetype=slim
 augroup END
 
-"----------------------------------------
-" Coffee
-"----------------------------------------
-augroup MyAutoCmd
-  autocmd BufReadPost *.coffee set filetype=coffee
-augroup END
