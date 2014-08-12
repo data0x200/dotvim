@@ -28,7 +28,7 @@ let $DOTVIM = expand('~/.vim')
 
 " Because a value is not set in $MYGVIMRC with the console, set it.
 if !exists($MYGVIMRC)
-  let $MYGVIMRC = expand('~/.gvimrc')
+  let $MYGVIMRC = expand('~/.vim/gvimrc')
 endif
 
 " Anywhere SID.
@@ -597,7 +597,7 @@ let g:quickrun_config.markdown = {
 "      \ 'runner'    : 'system'
 "      \ }
 
-nnoremap <Leader>q :<C-u>QuickRun cat<CR>
+nnoremap <Leader>q :<C-u>QuickRun<CR>
 nnoremap <Leader>, :<C-u>QuickRun<CR>
 nnoremap <Space>r :<C-u>QuickRun<CR>
 nnoremap <expr><silent> <Leader>lr "<Esc>:QuickRun -cmdopt \"-l " . line(".") . "\"<CR>"
@@ -629,6 +629,8 @@ let g:syntastic_mode_map = {
       \ 'active_filetypes' : [],
       \ 'passive_filetypes' : ['haml', 'scss']
       \}
+
+nnoremap <Space>e :<C-u>Errors<CR>
 
 "----------------------------------------
 " smartchr
