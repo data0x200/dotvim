@@ -153,7 +153,7 @@ NeoBundleLazy 'vim-ruby/vim-ruby', {
       \ 'autoload' : {
       \   'filetypes' : ['ruby']
       \ }}
-NeoBundleLazy 'jnwhiteh/vim-golang', {
+NeoBundleLazy 'vim-jp/go-vim', {
       \ 'autoload' : {
       \   'filetypes' : ['go']
       \ }}
