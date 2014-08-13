@@ -660,7 +660,6 @@ call smartinput#define_rule({
  augroup MyAutoCmd
    autocmd FileType go autocmd BufWritePre <buffer> Fmt
    autocmd FileType go set noexpandtab
-   autocmd FileType go compiler go
  augroup END
 
 "----------------------------------------
