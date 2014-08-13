@@ -139,6 +139,7 @@ NeoBundleLazy 'koron/codic-vim', {
       \ 'commands': ['Codic']
       \ }}
 NeoBundle 'kana/vim-tabpagecd'
+NeoBundle 'airblade/vim-rooter'
 
 " Language
 NeoBundleLazy 'vim-ruby/vim-ruby', {
@@ -648,7 +649,7 @@ let g:gofmt_command = 'goimports'
 augroup MyAutoCmd
   autocmd FileType go highlight goErr cterm=bold ctermfg=214 gui=bold guifg=Yellow
   autocmd FileType go match goErr /\<err\>/
-  autocmd FileType go set noexpandtab
+  autocmd FileType go setlocal noexpandtab
   autocmd FileType go autocmd BufWritePre <buffer> Fmt
   autocmd FileType go compiler go
 augroup END
