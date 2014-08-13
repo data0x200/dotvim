@@ -28,7 +28,7 @@ let $DOTVIM = expand('~/.vim')
 
 " Because a value is not set in $MYGVIMRC with the console, set it.
 if !exists($MYGVIMRC)
-  let $MYGVIMRC = expand('~/.gvimrc')
+  let $MYGVIMRC = expand('~/.vim/gvimrc')
 endif
 
 " Anywhere SID.
@@ -659,6 +659,7 @@ call smartinput#define_rule({
 
  augroup MyAutoCmd
    autocmd FileType go autocmd BufWritePre <buffer> Fmt
+   autocmd FileType go set noexpandtab
    autocmd FileType go compiler go
  augroup END
 
