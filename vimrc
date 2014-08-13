@@ -366,19 +366,6 @@ inoremap <C-e> <End>
 inoremap <C-d> <Del>
 inoremap <C-g> <Esc>
 
-" brackets
-" Altkeyはgvim依存
-" TODO:端末でも使用可能にする
-inoremap <A-{> {}<Left>
-inoremap <A-}> {<CR>}<Left><CR><UP><TAB>
-inoremap <A-[> []<Left>
-inoremap <A-(> ()<Left>
-inoremap <A-)> (<CR>)<Left><CR><UP><TAB>
-inoremap <A-"> ""<Left>
-inoremap <A-'> ''<Left>
-inoremap <A-<> <><Left>
-inoremap <A-l> <Right>
-
 " ctags new tab and vsp
 nnoremap <C-S-]> :tab split<CR>:exec("tag ".expand("<cword>"))<CR>
 nnoremap <A-\> :sp <CR>:exec("tag ".expand("<cword>"))<CR>
@@ -466,7 +453,8 @@ call unite#custom#profile('neobundle/update', 'context', {
       \ })
 
 nnoremap <Space>gr :<C-u>Unite git_cached<CR>
-nnoremap <Space>ua :<C-u>Unite buffer file_mru<CR>
+nnoremap <Space>ua :<C-u>Unite buffer neomru/file<CR>
+nnoremap <Space>uc :<C-u>UniteWithBufferDir file<CR>
 
 "----------------------------------------
 " vimproc
@@ -494,10 +482,10 @@ let g:neocomplete#enable_at_startup=1
 let g:neocomplete#enable_auto_select=0
 let g:neocomplete#enable_auto_close_preview=0
 
-inoremap <expr><CR> pumvisible() ? neocomplete#cancel_popup()."\<CR>" : "\<CR>"
+inoremap <expr><CR> pumvisible() ? neocomplete#close_popup()."\<CR>" : "\<CR>"
 inoremap <expr><C-g> neocomplete#smart_close_popup()
 inoremap <expr><C-l> neocomplete#start_manual_complete()
-inoremap <expr><TAB> neocomplete#close_popup()
+inoremap <expr><TAB> pumvisible() ? neocomplete#close_popup() : "\<TAB>"
 inoremap <expr><C-h> neocomplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS> neocomplete#smart_close_popup()."\<C-h>"
 
@@ -654,13 +642,16 @@ call smartinput#define_rule({
 "----------------------------------------
 " Golang
 "----------------------------------------
- set completeopt=menuone,preview
- let g:gofmt_command = 'goimports'
+set completeopt=menuone,preview
+let g:gofmt_command = 'goimports'
 
- augroup MyAutoCmd
-   autocmd FileType go autocmd BufWritePre <buffer> Fmt
-   autocmd FileType go set noexpandtab
- augroup END
+augroup MyAutoCmd
+  autocmd FileType go highlight goErr cterm=bold ctermfg=214 gui=bold guifg=Yellow
+  autocmd FileType go match goErr /\<err\>/
+  autocmd FileType go set noexpandtab
+  autocmd FileType go autocmd BufWritePre <buffer> Fmt
+  autocmd FileType go compiler go
+augroup END
 
 "----------------------------------------
 " Ruby
@@ -683,4 +674,3 @@ command! V Rview
 augroup MyAutoCmd
   autocmd BufReadPost *.slim set filetype=slim
 augroup END
-
