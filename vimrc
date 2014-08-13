@@ -464,6 +464,7 @@ call unite#custom#profile('default', 'context', {
 call unite#custom#profile('neobundle/update', 'context', {
       \ 'auto_quit' : 1
       \ })
+
 nnoremap <Space>gr :<C-u>Unite git_cached<CR>
 nnoremap <Space>ua :<C-u>Unite buffer file_mru<CR>
 
@@ -609,10 +610,6 @@ let g:syntastic_mode_map = {
       \ 'active_filetypes' : [],
       \ 'passive_filetypes' : ['haml', 'scss']
       \}
-
-"----------------------------------------
-" smartchr
-"----------------------------------------
 
 "----------------------------------------
 " smartinput
